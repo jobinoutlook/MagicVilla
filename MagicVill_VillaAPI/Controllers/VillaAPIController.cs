@@ -86,6 +86,7 @@ namespace MagicVilla_VillaAPI.Controllers
             //}
 
             Villa model = _mapper.Map<Villa>(villaDTO);
+            model.CreatedDate = DateTime.Now;   
 
             //Villa model = new()
             //{
@@ -145,7 +146,7 @@ namespace MagicVilla_VillaAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaDTO villaDTO)
+        public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaUpdateDTO villaDTO)
         {
             if (villaDTO == null || villaDTO.Id != id)
             {
