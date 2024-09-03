@@ -2,6 +2,7 @@
 using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dto;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -105,13 +106,21 @@ namespace MagicVilla_VillaAPI.Controllers
         {
             try
             {
+                if (createDTO == null) return BadRequest(createDTO);
+
                 if (await _db.VillaNumbers.FirstOrDefaultAsync(u => u.VillaNo == createDTO.VillaNo) != null)
                 {
                     ModelState.AddModelError("CustomError", "Villa Number already exists!");
                     return BadRequest(ModelState);
                 }
 
-                if (createDTO == null) return BadRequest(createDTO);
+                if (await _db.Villas.FirstOrDefaultAsync(u => u.Id == createDTO.VillaID) == null)
+                {
+                    ModelState.AddModelError("CustomError", "Villa ID is invalid!");
+                    return BadRequest(ModelState);
+                }
+
+                
 
                
 
@@ -195,6 +204,12 @@ namespace MagicVilla_VillaAPI.Controllers
                 if (updateDTO == null || updateDTO.VillaNo != villaNo)
                 {
                     return BadRequest();
+                }
+
+                if (await _db.Villas.FirstOrDefaultAsync(u => u.Id == updateDTO.VillaID) == null)
+                {
+                    ModelState.AddModelError("CustomError", "Villa ID is invalid!");
+                    return BadRequest(ModelState);
                 }
 
                 VillaNumber model = _mapper.Map<VillaNumber>(updateDTO);
