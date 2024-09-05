@@ -18,10 +18,10 @@ namespace MagicVilla_Web.Services
         {
             return SendAsync<T>(new Models.APIRequest()
             {
-                ApiType=MagicVilla_Utility.SD.ApiType.POST,
+                ApiType = MagicVilla_Utility.SD.ApiType.POST,
                 Data = dto,
-                Url=_villaUrl
-            })
+                Url = _villaUrl
+            });
         }
 
         public Task<T> DeleteAsync<T>(int id)
