@@ -1,5 +1,7 @@
 ﻿using MagicVilla_Web.Models.Dto;
 using MagicVilla_Web.Services.IServices;
+using static MagicVilla_Utility.SD;
+using System;
 
 namespace MagicVilla_Web.Services
 {
@@ -20,28 +22,48 @@ namespace MagicVilla_Web.Services
             {
                 ApiType = MagicVilla_Utility.SD.ApiType.POST,
                 Data = dto,
-                Url = _villaUrl
+                Url = _villaUrl + "/api/VillaAPI"
             });
         }
 
         public Task<T> DeleteAsync<T>(int id)
         {
-            throw new NotImplementedException();
+            return SendAsync<T>(new Models.APIRequest()
+            {
+                ApiType = MagicVilla_Utility.SD.ApiType.DELETE,
+                
+                Url = _villaUrl + "/api/VillaAPI/" + id
+            });
         }
 
         public Task<T> GetAllAsync<T>()
         {
-            throw new NotImplementedException();
+            return SendAsync<T>(new Models.APIRequest()
+            {
+                ApiType = MagicVilla_Utility.SD.ApiType.GET,
+
+                Url = _villaUrl + "/api/VillaAPI/"
+            });
         }
 
         public Task<T> GetAsync<T>(int id)
         {
-            throw new NotImplementedException();
+            return SendAsync<T>(new Models.APIRequest()
+            {
+                ApiType = MagicVilla_Utility.SD.ApiType.GET,
+
+                Url = _villaUrl + "/api/VillaAPI/" + id
+            });
         }
 
         public Task<T> UpdateAsync<T>(VillaUpdateDTO dto)
         {
-            throw new NotImplementedException();
+            return SendAsync<T>(new Models.APIRequest()
+            {
+                ApiType = MagicVilla_Utility.SD.ApiType.PUT,
+                Data = dto,
+                Url = _villaUrl + "/api/VillaAPI/"+ dto.Id
+            });
         }
     }
 }
