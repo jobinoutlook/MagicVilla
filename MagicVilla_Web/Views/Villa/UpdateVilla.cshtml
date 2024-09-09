@@ -1,7 +1,10 @@
-﻿@model MagicVilla_Web.Models.Dto.VillaCreateDTO
-  
-<form asp-action="CreateVilla">
+﻿@model MagicVilla_Web.Models.Dto.VillaUpdateDTO
+
+<form asp-action="UpdateVilla">
     <br />
+    <h1 class="text-primary">Update Villa</h1>
+    <hr />
+    <input hidden asp-for="Id" />
     <div class="row">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -9,7 +12,7 @@
             <label asp-for="Name" class="control-label pt-2" style="font-size:20px"></label>
         </div>
 
-        <div class="col-10 pb-3" >
+        <div class="col-10 pb-3">
             <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
@@ -74,19 +77,20 @@
         </div>
 
 
+
         <div class="col-5 offset-2">
             <a asp-action="IndexVilla" asp-controller="Villa" class="btn btn-primary form-control">Back To List</a>
         </div>
 
         <div class="col-5">
-            <input type="submit" value="Create" class="btn btn-success form-control" />
+            <input type="submit" value="Update" class="btn btn-success form-control" />
         </div>
 
-        
+
 
     </div>
 </form>
 
-@section Scripts{
+@section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

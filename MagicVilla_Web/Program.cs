@@ -16,6 +16,9 @@ namespace MagicVilla_Web
             builder.Services.AddHttpClient<IVillaService, VillaService>();
             builder.Services.AddScoped<IVillaService,VillaService>();
 
+            builder.Services.AddHttpClient<IVillaNumberService, VillaNumberService>();
+            builder.Services.AddScoped<IVillaNumberService, VillaNumberService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
