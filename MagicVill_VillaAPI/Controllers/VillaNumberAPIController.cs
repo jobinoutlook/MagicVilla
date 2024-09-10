@@ -35,7 +35,7 @@ namespace MagicVilla_VillaAPI.Controllers
             try
             {
 
-                IEnumerable<VillaNumber> villaNumberList = await _db.VillaNumbers.ToListAsync();
+                IEnumerable<VillaNumber> villaNumberList = await _db.VillaNumbers.Include(u => u.Villa).ToListAsync();
                 _logger.Log("Getting all villas", LogType.INFO);
 
                 // return Ok(await _db.Villas.ToListAsync());
