@@ -40,10 +40,10 @@ namespace MagicVilla_Web.Controllers
             VillaNumberCreateVM villaNumberVM = new();
 
             APIResponse response = await _villaService.GetAllAsync<APIResponse>();
-
+//====================================================================================================
             //this is a hack
             //if(response!=null && response.IsSuccess && response.ErrorMessages.Count==0)
-
+//====================================================================================================
             if(response!=null && response.IsSuccess)
             {
                var villaDTOs = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
@@ -66,8 +66,28 @@ namespace MagicVilla_Web.Controllers
                 {
                     return RedirectToAction(nameof(IndexVillaNumber));
                 }
+                else
+                {
+                    if(response.ErrorMessages.Count>0)
+                    {
+                        ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
+                    }
+                }
 
             }
+
+            APIResponse resp = await _villaService.GetAllAsync<APIResponse>();
+            if(resp!=null && resp.IsSuccess)
+            {
+                var villaDTOs = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(resp.Result));
+                model.VillaList = villaDTOs.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                });
+            }
+
+
             return View(model);
         }
 
