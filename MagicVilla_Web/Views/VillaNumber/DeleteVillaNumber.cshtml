@@ -1,14 +1,11 @@
-﻿@model MagicVilla_Web.Models.VM.VillaNumberCreateVM
+﻿@model MagicVilla_Web.Models.VM.VillaNumberDeleteVM
 
-<form asp-action="CreateVillaNumber">
+<form asp-action="DeleteVillaNumber">
     <br />
-    <h1 class="text-primary text-center">Create VillaNumber</h1>
-    <hr />
-    <div class="container  p-4">
-        <div class="row border pb-3 ms-2 me-5 w-60">
-            @* <div asp-validation-summary="ModelOnly" class="text-danger"></div> *@
-            <div asp-validation-summary="All" class="text-danger"></div>
-
+    <div class="container border p-3">
+        <h1 class="text-bg-primary">Delete VillaNumber</h1>
+        <div class="row ms-2 me-5 w-50">
+           <fieldset disabled>
             <div class="col-2">
                 <label asp-for="VillaNumber.VillaNo" class="control-label pt-2" style="font-size:20px"></label>
             </div>
@@ -39,13 +36,13 @@
             </textarea>
                 <span asp-validation-for="VillaNumber.SpecialDetails" class="text-danger"></span>
             </div>
-
+            </fieldset>
             <div class="col-5 offset-2">
                 <a asp-action="IndexVillaNumber" asp-controller="VillaNumber" class="btn btn-primary form-control">Back To List</a>
             </div>
 
             <div class="col-5">
-                <input type="submit" value="Create" class="btn btn-success form-control" />
+                <input type="submit" value="Delete" class="btn btn-success form-control" />
             </div>
 
         </div>
