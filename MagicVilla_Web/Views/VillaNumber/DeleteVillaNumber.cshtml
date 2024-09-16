@@ -2,17 +2,20 @@
 
 <form asp-action="DeleteVillaNumber">
     <br />
-    <div class="container border p-3">
-        <h1 class="text-bg-primary">Delete VillaNumber</h1>
-        <div class="row ms-2 me-5 w-50">
-           <fieldset disabled>
+    <div class="container  p-3">
+        <h1 class="text-primary text-center">Delete VillaNumber</h1>
+
+        <input hidden asp-for="VillaNumber.VillaNo" />
+
+        <div class="row border p-4 w-60">
+           
             <div class="col-2">
                 <label asp-for="VillaNumber.VillaNo" class="control-label pt-2" style="font-size:20px"></label>
             </div>
 
             <div class="col-10 pb-3">
-                <input asp-for="VillaNumber.VillaNo" class="form-control" />
-                <span asp-validation-for="VillaNumber.VillaNo" class="text-danger"></span>
+                <input asp-for="VillaNumber.VillaNo" disabled class="form-control" />
+                
             </div>
 
 
@@ -21,10 +24,10 @@
             </div>
 
             <div class="col-10 pb-3">
-                <select asp-for="VillaNumber.VillaID" class="form-select" asp-items="@Model.VillaList">
+                <select asp-for="VillaNumber.VillaID" disabled class="form-select" asp-items="@Model.VillaList">
                     <option disabled selected>--Select Villa--</option>
                 </select>
-                <span asp-validation-for="VillaNumber.VillaID" class="text-danger"></span>
+               
             </div>
 
 
@@ -32,11 +35,11 @@
                 <label asp-for="VillaNumber.SpecialDetails" class="control-label pt-2" style="font-size:20px;"></label>
             </div>
             <div class="col-10 pb-3">
-                <textarea asp-for="VillaNumber.SpecialDetails" class="form-control" rows="5">
-            </textarea>
-                <span asp-validation-for="VillaNumber.SpecialDetails" class="text-danger"></span>
+                <textarea asp-for="VillaNumber.SpecialDetails" disabled class="form-control" rows="5">
+                </textarea>
+                
             </div>
-            </fieldset>
+           
             <div class="col-5 offset-2">
                 <a asp-action="IndexVillaNumber" asp-controller="VillaNumber" class="btn btn-primary form-control">Back To List</a>
             </div>

@@ -4,6 +4,9 @@
     <br />
     <div class="container border p-3">
         <h1 class="text-primary">Update VillaNumber</h1>
+
+        <input hidden asp-for=VillaNumber.VillaNo />
+
         <div class="row ms-2 me-1 w-75">
             @* <div asp-validation-summary="ModelOnly" class="text-danger"></div> *@
             <div asp-validation-summary="All" class="text-danger"></div>
@@ -13,7 +16,7 @@
             </div>
 
             <div class="col-9 pb-3">
-                <input asp-for="VillaNumber.VillaNo" readonly class="form-control" />
+                <input asp-for="VillaNumber.VillaNo" disabled class="form-control" />
                 <span asp-validation-for="VillaNumber.VillaNo" class="text-danger"></span>
             </div>
 

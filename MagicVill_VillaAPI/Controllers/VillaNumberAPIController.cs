@@ -108,6 +108,12 @@ namespace MagicVilla_VillaAPI.Controllers
             {
                 if (createDTO == null) return BadRequest(createDTO);
 
+                if (createDTO.VillaNo < 1)
+                {
+                    ModelState.AddModelError("ErrorMessages", "Villa Number must be greater than 0");
+                    return BadRequest(ModelState);
+                }
+
                 if (await _db.VillaNumbers.FirstOrDefaultAsync(u => u.VillaNo == createDTO.VillaNo) != null)
                 {
                     ModelState.AddModelError("ErrorMessages", "Villa Number already exists!");
