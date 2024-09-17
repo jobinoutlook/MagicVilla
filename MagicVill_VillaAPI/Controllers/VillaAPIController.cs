@@ -2,6 +2,7 @@
 using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,7 @@ namespace MagicVilla_VillaAPI.Controllers
         private readonly ILogging _logger;
         private readonly ApplicationDbContext _db;
         private readonly IMapper _mapper;
-        public VillaAPIController(ApplicationDbContext db, ILogging logger,IMapper mapper)
+        public VillaAPIController(ApplicationDbContext db, ILogging logger, IMapper mapper)
         {
             _logger = logger;
             _db = db;
@@ -26,8 +27,10 @@ namespace MagicVilla_VillaAPI.Controllers
             this._response = new APIResponse();
         }
 
-
+        [Authorize]
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetVillas()
         {
@@ -55,8 +58,10 @@ namespace MagicVilla_VillaAPI.Controllers
         }
 
 
-
+        [Authorize(Roles = "admin")]
         [HttpGet("{id:int}", Name = "GetVilla")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -98,6 +103,7 @@ namespace MagicVilla_VillaAPI.Controllers
 
 
         [HttpPost]
+        
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -156,10 +162,12 @@ namespace MagicVilla_VillaAPI.Controllers
 
 
         [HttpDelete("{id:int}", Name = "DeleteVilla")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-
+        [Authorize(Roles ="CUSTOM")]
         public async Task<ActionResult<APIResponse>> DeleteVilla(int id)
         {
             try
