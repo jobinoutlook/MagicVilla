@@ -2,6 +2,7 @@
 using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -21,6 +22,8 @@ namespace MagicVilla_VillaAPI
             var connectionstring = builder.Configuration.GetConnectionString("DefaultSQLConnection");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionstring));
+
+            //builder.Services.AddResponseCaching();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddAutoMapper(typeof(MappingConfig));
@@ -50,6 +53,18 @@ namespace MagicVilla_VillaAPI
                     ValidateAudience = false
                 };
             });
+
+            //caching profile
+            builder.Services.AddControllers(option =>
+            {
+                option.CacheProfiles.Add("Default30",
+                    new CacheProfile()
+                    {
+                        Duration = 30
+                    });
+            });
+                
+
 
 
             builder.Services.AddControllers(option =>

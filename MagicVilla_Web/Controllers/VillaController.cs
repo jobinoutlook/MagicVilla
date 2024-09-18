@@ -20,6 +20,7 @@ namespace MagicVilla_Web.Controllers
             
         }
 
+        [ResponseCache(Duration = 30)]
         public async Task<IActionResult> IndexVilla()
         {
             List<VillaDTO> lstVilladto = new();
