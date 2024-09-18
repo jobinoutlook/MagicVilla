@@ -16,53 +16,58 @@ namespace MagicVilla_Web.Services
             _villaUrl = configuration.GetValue<string>("ServiceUrls:VillaAPI");
         }
 
-        public Task<T> CreateAsync<T>(VillaCreateDTO dto)
+        public Task<T> CreateAsync<T>(VillaCreateDTO dto, string token)
         {
             return SendAsync<T>(new Models.APIRequest()
             {
                 ApiType = MagicVilla_Utility.SD.ApiType.POST,
                 Data = dto,
-                Url = _villaUrl + "/api/VillaAPI"
+                Url = _villaUrl + "/api/VillaAPI",
+                Token = token
             });
         }
 
-        public Task<T> DeleteAsync<T>(int id)
+        public Task<T> DeleteAsync<T>(int id, string token)
         {
             return SendAsync<T>(new Models.APIRequest()
             {
                 ApiType = MagicVilla_Utility.SD.ApiType.DELETE,
                 
-                Url = _villaUrl + "/api/VillaAPI/" + id
+                Url = _villaUrl + "/api/VillaAPI/" + id,
+                Token = token
             });
         }
 
-        public Task<T> GetAllAsync<T>()
+        public Task<T> GetAllAsync<T>(string token)
         {
             return SendAsync<T>(new Models.APIRequest()
             {
                 ApiType = MagicVilla_Utility.SD.ApiType.GET,
 
-                Url = _villaUrl + "/api/VillaAPI/"
+                Url = _villaUrl + "/api/VillaAPI/",
+                Token = token
             });
         }
 
-        public Task<T> GetAsync<T>(int id)
+        public Task<T> GetAsync<T>(int id, string token)
         {
             return SendAsync<T>(new Models.APIRequest()
             {
                 ApiType = MagicVilla_Utility.SD.ApiType.GET,
 
-                Url = _villaUrl + "/api/VillaAPI/" + id
+                Url = _villaUrl + "/api/VillaAPI/" + id,
+                Token = token
             });
         }
 
-        public Task<T> UpdateAsync<T>(VillaUpdateDTO dto)
+        public Task<T> UpdateAsync<T>(VillaUpdateDTO dto, string token)
         {
             return SendAsync<T>(new Models.APIRequest()
             {
                 ApiType = MagicVilla_Utility.SD.ApiType.PUT,
                 Data = dto,
-                Url = _villaUrl + "/api/VillaAPI/"+ dto.Id
+                Url = _villaUrl + "/api/VillaAPI/"+ dto.Id,
+                Token = token
             });
         }
     }
