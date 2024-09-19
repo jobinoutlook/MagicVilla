@@ -38,6 +38,8 @@ namespace MagicVilla_VillaAPI.Controllers
             try
             {
 
+                //var products = _db.Villas.AsNoTracking();
+
                 IEnumerable<Villa> villaList = await _db.Villas.ToListAsync();
                 _logger.Log("Getting all villas", LogType.INFO);
 

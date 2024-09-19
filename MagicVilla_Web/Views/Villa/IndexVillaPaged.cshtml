@@ -1,0 +1,76 @@
+﻿@model PaginatedList<MagicVilla_Web.Models.Dto.VillaDTO>
+<br />
+<div class="container p-4 border">
+    <div class="row pb-2">
+        <div class="col">
+            <h1 class="text-primary">Villa List</h1>
+        </div>
+
+        <div class="col text-end pt-1">
+            <a asp-controller="Villa" asp-action="CreateVilla" class="btn btn-outline-primary"><i class="bi bi-plus-square-fill"></i>&nbsp; Create New Villa</a>
+
+        </div>
+
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr class="border-bottom border-white">
+                <th>
+                    Name
+                </th>
+                <th>
+                    Occupancy
+                </th>
+                <th>
+                    Price
+                </th>
+                <th>
+
+                </th>
+            </tr>
+
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Occupancy</td>
+                    <td>@((item.Rate).ToString("c"))</td>
+                    <td>
+                        <a asp-controller="Villa" asp-action="UpdateVilla" asp-route-villaId="@item.Id" class="btn btn-success"><i class="bi bi-pencil-square"></i>&nbsp;Edit</a>
+                        <a asp-controller="Villa" asp-action="DeleteVilla" asp-route-villaId="@item.Id" class="btn btn-danger"><i class="bi bi-trash-fill"></i>&nbsp;Delete</a>
+
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            @if (Model.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="IndexVillaPaged" asp-route-pageNumber="@(Model.PageIndex - 1)">Previous</a>
+                </li>
+            }
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                    <a class="page-link" asp-action="IndexVillaPaged" asp-route-pageNumber="@i">@i</a>
+                </li>
+            }
+            @if (Model.HasNextPage)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="IndexVillaPaged" asp-route-pageNumber="@(Model.PageIndex + 1)">Next</a>
+                </li>
+            }
+        </ul>
+    </nav>
+
+
+</div>

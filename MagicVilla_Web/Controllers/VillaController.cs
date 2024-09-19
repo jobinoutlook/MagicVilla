@@ -5,7 +5,10 @@ using MagicVilla_Web.Models.Dto;
 using MagicVilla_Web.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MagicVilla_Web.Controllers
 {
@@ -20,7 +23,7 @@ namespace MagicVilla_Web.Controllers
             
         }
 
-        [ResponseCache(Duration = 30)]
+        //[ResponseCache(Duration = 30)]
         public async Task<IActionResult> IndexVilla()
         {
             List<VillaDTO> lstVilladto = new();
@@ -29,11 +32,33 @@ namespace MagicVilla_Web.Controllers
             if(response != null && response.IsSuccess)
             {
                 lstVilladto = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
+                
             }
 
             return View(lstVilladto);
         }
 
+        public async Task<IActionResult> IndexVillaPaged(int? pageNumber)
+        {
+            int pageSize = 5;
+
+           
+            APIResponse response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+            if (response != null && response.IsSuccess)
+            {
+                List<VillaDTO> lst = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
+                var queryable = lst.AsQueryable();
+
+              var paginatedResult = await PaginatedList<VillaDTO>.CreateAsync(queryable, pageNumber ?? 1, pageSize);
+
+              return View(paginatedResult);
+
+            }
+            
+
+            return NotFound();
+            
+        }
 
 
 
@@ -55,7 +80,7 @@ namespace MagicVilla_Web.Controllers
                 var response = await _villaService.CreateAsync<APIResponse>(model, HttpContext.Session.GetString(SD.SessionToken));
                 if(response != null && response.IsSuccess)
                 {
-                   return RedirectToAction(nameof(IndexVilla));
+                   return RedirectToAction(nameof(IndexVillaPaged));
                 }
             
             }
@@ -90,7 +115,7 @@ namespace MagicVilla_Web.Controllers
                 var response = await _villaService.UpdateAsync<APIResponse>(model, HttpContext.Session.GetString(SD.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
-                   return RedirectToAction(nameof(IndexVilla));
+                   return RedirectToAction(nameof(IndexVillaPaged));
                 }
 
             }
@@ -122,7 +147,7 @@ namespace MagicVilla_Web.Controllers
                 var response = await _villaService.DeleteAsync<APIResponse>(model.Id, HttpContext.Session.GetString(SD.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
-                   return RedirectToAction(nameof(IndexVilla));
+                   return RedirectToAction(nameof(IndexVillaPaged));
                 }
 
            
