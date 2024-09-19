@@ -44,7 +44,7 @@ namespace MagicVilla_VillaAPI.Controllers
                 // return Ok(await _db.Villas.ToListAsync());
                 _response.Result = _mapper.Map<List<VillaDTO>>(villaList);
                 _response.StatusCode = HttpStatusCode.OK;
-
+                
 
                 return Ok(_response);
             }
@@ -74,6 +74,7 @@ namespace MagicVilla_VillaAPI.Controllers
                 {
                     _logger.Log("Get Villa Error with Id " + id, LogType.ERROR);
                     _response.StatusCode=HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
                     return BadRequest(_response);
                 }
 
@@ -83,6 +84,7 @@ namespace MagicVilla_VillaAPI.Controllers
                 {
                     _logger.Log("Villa not found", LogType.WARNING);
                     _response.StatusCode = HttpStatusCode.NotFound;
+                    _response.IsSuccess = false;
                     return NotFound(_response);
                 }
 
