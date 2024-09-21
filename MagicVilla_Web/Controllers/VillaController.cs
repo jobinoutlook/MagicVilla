@@ -24,19 +24,19 @@ namespace MagicVilla_Web.Controllers
         }
 
         //[ResponseCache(Duration = 30)]
-        public async Task<IActionResult> IndexVilla()
-        {
-            List<VillaDTO> lstVilladto = new();
+        //public async Task<IActionResult> IndexVilla()
+        //{
+        //    List<VillaDTO> lstVilladto = new();
 
-            var response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
-            if(response != null && response.IsSuccess)
-            {
-                lstVilladto = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
+        //    var response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+        //    if(response != null && response.IsSuccess)
+        //    {
+        //        lstVilladto = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
                 
-            }
+        //    }
 
-            return View(lstVilladto);
-        }
+        //    return View(lstVilladto);
+        //}
 
         public async Task<IActionResult> IndexVillaPaged(int? pageNumber)
         {

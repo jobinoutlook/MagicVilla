@@ -26,17 +26,38 @@ namespace MagicVilla_Web.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> IndexVillaNumber()
-        {
-            List<VillaNumberDTO> lstVilladto = new();
+        //public async Task<IActionResult> IndexVillaNumber()
+        //{
+        //    List<VillaNumberDTO> lstVilladto = new();
 
-            var response = await _villaNumberService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+        //    var response = await _villaNumberService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+        //    if (response != null && response.IsSuccess)
+        //    {
+        //        lstVilladto = JsonConvert.DeserializeObject<List<VillaNumberDTO>>(Convert.ToString(response.Result));
+        //    }
+
+        //    return View(lstVilladto);
+        //}
+
+        public async Task<IActionResult> IndexVillaNumberPaged(int? pageNumber)
+        {
+            int pageSize = 5;
+
+
+            APIResponse response = await _villaNumberService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
-                lstVilladto = JsonConvert.DeserializeObject<List<VillaNumberDTO>>(Convert.ToString(response.Result));
+                List<VillaNumberDTO> lst = JsonConvert.DeserializeObject<List<VillaNumberDTO>>(Convert.ToString(response.Result));
+                var queryable = lst.AsQueryable();
+
+                var paginatedResult = await PaginatedList<VillaNumberDTO>.CreateAsync(queryable, pageNumber ?? 1, pageSize);
+
+                return View(paginatedResult);
+
             }
 
-            return View(lstVilladto);
+
+            return NotFound();
         }
 
         [Authorize(Roles = "admin")]
@@ -71,7 +92,7 @@ namespace MagicVilla_Web.Controllers
                 var response = await _villaNumberService.CreateAsync<APIResponse>(model.VillaNumber, HttpContext.Session.GetString(SD.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
-                    return RedirectToAction(nameof(IndexVillaNumber));
+                    return RedirectToAction(nameof(IndexVillaNumberPaged));
                 }
                 else
                 {
@@ -138,7 +159,7 @@ namespace MagicVilla_Web.Controllers
                 var response = await _villaNumberService.UpdateAsync<APIResponse>(model.VillaNumber, HttpContext.Session.GetString(SD.SessionToken));
                 if(response != null && response.IsSuccess)
                 {
-                    return RedirectToAction(nameof(IndexVillaNumber));
+                    return RedirectToAction(nameof(IndexVillaNumberPaged));
                 }
                 else
                 {
@@ -202,7 +223,7 @@ namespace MagicVilla_Web.Controllers
             var response = await _villaNumberService.DeleteAsync<APIResponse>(model.VillaNumber.VillaNo, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
-                return RedirectToAction(nameof(IndexVillaNumber));
+                return RedirectToAction(nameof(IndexVillaNumberPaged));
             }
 
             return View(model);
