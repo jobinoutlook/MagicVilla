@@ -48,7 +48,7 @@ namespace MagicVilla_VillaAPI.Controllers
                 return BadRequest(_response);
             }
 
-            LocalUser user = await _userRepository.Register(model);
+            UserDTO user = await _userRepository.Register(model);
             if (user == null)
             {
                 _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
