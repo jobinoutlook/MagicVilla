@@ -33,9 +33,30 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="VillaNumber" asp-action="IndexVillaNumberPaged">Villa Number</a>
                         </li>
+                        @* @if (httpAcc.HttpContext.Session.GetString(SD.SessionToken) != null
+                        && httpAcc.HttpContext.Session.GetString(SD.SessionToken).ToString().Trim().Length > 0)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Register">Register</a>
+                            </li>
+                        } *@
+                        
 
+                    </ul>
+                </div>
+                <div  style="float:right;margin-right:10px" >
+                    <ul class="navbar-nav flex-grow-1">
                         @if (httpAcc.HttpContext.Session.GetString(SD.SessionToken) != null
-                                && httpAcc.HttpContext.Session.GetString(SD.SessionToken).ToString().Trim().Length > 0)
+                        && httpAcc.HttpContext.Session.GetString(SD.SessionToken).ToString().Trim().Length > 0)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
@@ -50,9 +71,9 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Register">Register</a>
                             </li>
                         }
-
                     </ul>
                 </div>
+
             </div>
         </nav>
     </header>
