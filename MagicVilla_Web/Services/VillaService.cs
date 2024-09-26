@@ -23,7 +23,8 @@ namespace MagicVilla_Web.Services
                 ApiType = MagicVilla_Utility.SD.ApiType.POST,
                 Data = dto,
                 Url = _villaUrl + "/api/VillaAPI",
-                Token = token
+                Token = token,
+                ContentType = ContentType.MultipartFormData
             });
         }
 
@@ -67,7 +68,8 @@ namespace MagicVilla_Web.Services
                 ApiType = MagicVilla_Utility.SD.ApiType.PUT,
                 Data = dto,
                 Url = _villaUrl + "/api/VillaAPI/"+ dto.Id,
-                Token = token
+                Token = token,
+                ContentType = ContentType.MultipartFormData
             });
         }
     }

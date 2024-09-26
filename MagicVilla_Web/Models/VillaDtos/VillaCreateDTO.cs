@@ -4,8 +4,7 @@ namespace MagicVilla_Web.Models.Dto
 {
     public class VillaCreateDTO
     {
-        //[Key]
-        //public int Id { get; set; }
+        
         [Required]
         [MaxLength(30)]
         public string? Name { get; set; }
@@ -15,6 +14,7 @@ namespace MagicVilla_Web.Models.Dto
         public int Occupancy { get; set; }
         public int Sqft { get; set; }
         public string? ImageUrl { get; set; }
+        public IFormFile? Image { get; set; }
         public string? Amenity {  get; set; }
        
 
