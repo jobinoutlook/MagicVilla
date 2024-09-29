@@ -2,13 +2,14 @@
 
 <form asp-action="DeleteVilla">
     <br />
-    <h1 class="text-primary text-center">Delete Villa</h1>
-    <hr />
+    
 
 
-    <div class="container  p-4">
+    <div class="container border  p-4">
+        <h1 class="text-primary text-center">Delete Villa</h1>
+        <hr />
         <input hidden asp-for="Id" />
-        <div class="row border p-4">
+        <div class="row  p-4">
            @*  <fieldset disabled> *@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -83,7 +84,7 @@
 
             @* <div class="col-5 offset-2"> *@
             <div class="col-5 offset-2">
-                <a asp-action="IndexVilla" asp-controller="Villa" class="btn btn-primary form-control">Back To List</a>
+                <a asp-action="IndexVillaPaged" asp-controller="Villa" class="btn btn-primary form-control">Back To List</a>
             </div>
 
             <div class="col-5">

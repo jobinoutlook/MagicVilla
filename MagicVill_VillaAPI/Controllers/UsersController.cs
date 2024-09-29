@@ -1,4 +1,5 @@
-﻿using MagicVilla_VillaAPI.Models;
+﻿using Azure;
+using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dto;
 using MagicVilla_VillaAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
@@ -22,8 +23,8 @@ namespace MagicVilla_VillaAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
-            var loginResponse = await _userRepository.Login(model);
-            if (loginResponse.User == null || string.IsNullOrEmpty(loginResponse.Token))
+            var tokenDto = await _userRepository.Login(model);
+            if (tokenDto == null || string.IsNullOrEmpty(tokenDto.AccessToken))
             {
                 _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
                 _response.IsSuccess = false;
@@ -32,7 +33,7 @@ namespace MagicVilla_VillaAPI.Controllers
             }
             _response.StatusCode = System.Net.HttpStatusCode.OK;
             _response.IsSuccess = true;
-            _response.Result = loginResponse;
+            _response.Result = tokenDto;
             return Ok(_response);
         }
 
@@ -61,6 +62,36 @@ namespace MagicVilla_VillaAPI.Controllers
             _response.IsSuccess = true;
             return Ok(_response);
             
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> GetNewTokenFromRefreshToken([FromBody] TokenDTO tokenDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                var tokenDTOResponse = await _userRepository.RefreshAccessToken(tokenDTO);
+                if (tokenDTOResponse==null|| string.IsNullOrEmpty(tokenDTOResponse.AccessToken))
+                {
+                    _response.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    _response.IsSuccess = false;
+                    _response.ErrorMessages.Add("Token Invalid");
+                    return BadRequest(_response);
+                }
+                _response.StatusCode = System.Net.HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = tokenDTOResponse;
+                return Ok(_response);
+
+            }
+            else
+            {
+                _response.IsSuccess = false;
+                _response.Result = "Invalid Input";
+                return BadRequest(_response);
+            }
+
+            
+
         }
     }
 }

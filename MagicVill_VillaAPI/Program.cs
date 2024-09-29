@@ -62,14 +62,14 @@ namespace MagicVilla_VillaAPI
             });
 
             //caching profile
-            builder.Services.AddControllers(option =>
-            {
-                option.CacheProfiles.Add("Default30",
-                    new CacheProfile()
-                    {
-                        Duration = 30
-                    });
-            });
+            //builder.Services.AddControllers(option =>
+            //{
+            //    option.CacheProfiles.Add("Default30",
+            //        new CacheProfile()
+            //        {
+            //            Duration = 30
+            //        });
+            //});
                 
 
 

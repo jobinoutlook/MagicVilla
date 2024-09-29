@@ -3,29 +3,29 @@
 <form asp-action="UpdateVillaNumber">
     <br />
     <div class="container border p-3">
-        <h1 class="text-primary">Update VillaNumber</h1>
-
+        <h1 class="text-primary text-center">Update VillaNumber</h1>
+        <hr />
         <input hidden asp-for=VillaNumber.VillaNo />
 
-        <div class="row ms-2 me-1 w-75">
+        <div class="row">
             @* <div asp-validation-summary="ModelOnly" class="text-danger"></div> *@
             <div asp-validation-summary="All" class="text-danger"></div>
 
-            <div class="col-3">
+            <div class="col-2">
                 <label asp-for="VillaNumber.VillaNo" class="control-label pt-2" style="font-size:20px"></label>
             </div>
 
-            <div class="col-9 pb-3">
+            <div class="col-10 pb-3">
                 <input asp-for="VillaNumber.VillaNo" disabled class="form-control" />
                 <span asp-validation-for="VillaNumber.VillaNo" class="text-danger"></span>
             </div>
 
 
-            <div class="col-3">
+            <div class="col-2">
                 <label asp-for="VillaNumber.VillaID" class="control-label pt-2" style="font-size:20px"></label>
             </div>
 
-            <div class="col-9 pb-3">
+            <div class="col-10 pb-3">
                 <select asp-for="VillaNumber.VillaID" class="form-select" asp-items="@Model.VillaList">
                     <option disabled selected>--Select Villa--</option>
                 </select>
@@ -33,20 +33,20 @@
             </div>
 
 
-            <div class="col-3">
+            <div class="col-2">
                 <label asp-for="VillaNumber.SpecialDetails" class="control-label pt-2" style="font-size:20px;"></label>
             </div>
-            <div class="col-9 pb-3">
+            <div class="col-10 pb-3">
                 <textarea asp-for="VillaNumber.SpecialDetails" class="form-control" rows="5">
             </textarea>
                 <span asp-validation-for="VillaNumber.SpecialDetails" class="text-danger"></span>
             </div>
 
-            <div class="col-4 offset-3">
+            <div class="col-5 offset-2">
                 <a asp-action="IndexVillaNumberPaged" asp-controller="VillaNumber" class="btn btn-primary form-control">Back To List</a>
             </div>
 
-            <div class="col-4">
+            <div class="col-5">
                 <input type="submit" value="Update" class="btn btn-success form-control" />
             </div>
 

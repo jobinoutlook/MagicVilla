@@ -13,7 +13,7 @@
                 <div class="col-4">
                     @if (@villa.ImageUrl != string.Empty.Trim())
                     {
-                        <img class="d-block w-100 rounded" src="@villa.ImageUrl" alt="First slide" />
+                        <img class="d-block w-100 rounded" asp-append-version="true" src="@villa.ImageUrl" alt="First slide" />
                     }
 
                 

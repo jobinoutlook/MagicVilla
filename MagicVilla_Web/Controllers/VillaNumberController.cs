@@ -30,7 +30,7 @@ namespace MagicVilla_Web.Controllers
         //{
         //    List<VillaNumberDTO> lstVilladto = new();
 
-        //    var response = await _villaNumberService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+        //    var response = await _villaNumberService.GetAllAsync<APIResponse>();
         //    if (response != null && response.IsSuccess)
         //    {
         //        lstVilladto = JsonConvert.DeserializeObject<List<VillaNumberDTO>>(Convert.ToString(response.Result));
@@ -44,7 +44,7 @@ namespace MagicVilla_Web.Controllers
             int pageSize = 5;
 
 
-            APIResponse response = await _villaNumberService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+            APIResponse response = await _villaNumberService.GetAllAsync<APIResponse>();
             if (response != null && response.IsSuccess)
             {
                 List<VillaNumberDTO> lst = JsonConvert.DeserializeObject<List<VillaNumberDTO>>(Convert.ToString(response.Result));
@@ -66,7 +66,7 @@ namespace MagicVilla_Web.Controllers
         {
             VillaNumberCreateVM villaNumberVM = new();
 
-            APIResponse response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+            APIResponse response = await _villaService.GetAllAsync<APIResponse>();
 //====================================================================================================
             //this is a hack
             //if(response!=null && response.IsSuccess && response.ErrorMessages.Count==0)
@@ -89,7 +89,7 @@ namespace MagicVilla_Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _villaNumberService.CreateAsync<APIResponse>(model.VillaNumber, HttpContext.Session.GetString(SD.SessionToken));
+                var response = await _villaNumberService.CreateAsync<APIResponse>(model.VillaNumber);
                 if (response != null && response.IsSuccess)
                 {
                     return RedirectToAction(nameof(IndexVillaNumberPaged));
@@ -104,7 +104,7 @@ namespace MagicVilla_Web.Controllers
 
             }
 
-            APIResponse resp = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+            APIResponse resp = await _villaService.GetAllAsync<APIResponse>();
             if(resp!=null && resp.IsSuccess)
             {
                 var villaDTOs = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(resp.Result));
@@ -124,7 +124,7 @@ namespace MagicVilla_Web.Controllers
         public async Task<IActionResult> UpdateVillaNumber(int villaNo)
         {
             VillaNumberUpdateVM villaNumberVM = new(); 
-            var response = await _villaNumberService.GetAsync<APIResponse>(villaNo, HttpContext.Session.GetString(SD.SessionToken));
+            var response = await _villaNumberService.GetAsync<APIResponse>(villaNo);
 
             if(response != null && response.IsSuccess)
             {
@@ -132,7 +132,7 @@ namespace MagicVilla_Web.Controllers
                 villaNumberVM.VillaNumber = _mapper.Map<VillaNumberUpdateDTO>(model);
             }
 
-            response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+            response = await _villaService.GetAllAsync<APIResponse>();
             if(response != null && response.IsSuccess)
             {
                 var villaDTOs = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
@@ -156,7 +156,7 @@ namespace MagicVilla_Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _villaNumberService.UpdateAsync<APIResponse>(model.VillaNumber, HttpContext.Session.GetString(SD.SessionToken));
+                var response = await _villaNumberService.UpdateAsync<APIResponse>(model.VillaNumber);
                 if(response != null && response.IsSuccess)
                 {
                     return RedirectToAction(nameof(IndexVillaNumberPaged));
@@ -171,7 +171,7 @@ namespace MagicVilla_Web.Controllers
             }
 
 
-            APIResponse resp = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+            APIResponse resp = await _villaService.GetAllAsync<APIResponse>();
             if (resp != null && resp.IsSuccess)
             {
                 var villaDTOs = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(resp.Result));
@@ -191,7 +191,7 @@ namespace MagicVilla_Web.Controllers
         public async Task<IActionResult> DeleteVillaNumber(int villaNo)
         {
             VillaNumberDeleteVM villaNumberVM = new();
-            var response = await _villaNumberService.GetAsync<APIResponse>(villaNo, HttpContext.Session.GetString(SD.SessionToken));
+            var response = await _villaNumberService.GetAsync<APIResponse>(villaNo);
 
             if (response != null && response.IsSuccess)
             {
@@ -199,7 +199,7 @@ namespace MagicVilla_Web.Controllers
                 villaNumberVM.VillaNumber = _mapper.Map<VillaNumberDTO>(model);
             }
 
-            response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+            response = await _villaService.GetAllAsync<APIResponse>();
             if (response != null && response.IsSuccess)
             {
                 var villaDTOs = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
@@ -220,7 +220,7 @@ namespace MagicVilla_Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteVillaNumber(VillaNumberDeleteVM model)
         {
-            var response = await _villaNumberService.DeleteAsync<APIResponse>(model.VillaNumber.VillaNo, HttpContext.Session.GetString(SD.SessionToken));
+            var response = await _villaNumberService.DeleteAsync<APIResponse>(model.VillaNumber.VillaNo);
             if (response != null && response.IsSuccess)
             {
                 return RedirectToAction(nameof(IndexVillaNumberPaged));

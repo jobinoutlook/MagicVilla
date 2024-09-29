@@ -15,10 +15,12 @@ namespace MagicVilla_Web.Controllers
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;
-
-        public AuthController(IAuthService authService)
+        private readonly ITokenProvider _tokenProvider;
+        private readonly IBaseService _baseService;
+        public AuthController(IAuthService authService, ITokenProvider tokenProvider)
         {
-                _authService = authService;
+            _authService = authService;
+            _tokenProvider = tokenProvider;
         }
 
         [HttpGet]
@@ -36,18 +38,18 @@ namespace MagicVilla_Web.Controllers
 
             if(response !=null && response.IsSuccess)
             {
-                LoginResponseDTO model = JsonConvert.DeserializeObject<LoginResponseDTO>(Convert.ToString(response.Result));
+                TokenDTO model = JsonConvert.DeserializeObject<TokenDTO>(Convert.ToString(response.Result));
 
                 var handler = new JwtSecurityTokenHandler();
-                var jwt = handler.ReadJwtToken(model.Token);
+                var jwt = handler.ReadJwtToken(model.AccessToken);
 
                 var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                 identity.AddClaim(new Claim(ClaimTypes.Name,jwt.Claims.FirstOrDefault(u=>u.Type=="unique_name").Value ));
                 identity.AddClaim(new Claim(ClaimTypes.Role,jwt.Claims.FirstOrDefault(u => u.Type == "role").Value));
                 var principal = new ClaimsPrincipal(identity);
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,principal);
-                
-                HttpContext.Session.SetString(SD.SessionToken, model.Token);
+
+                _tokenProvider.SetToken(model);
                 return RedirectToAction("Index","Home");
             }
             else
@@ -103,8 +105,8 @@ namespace MagicVilla_Web.Controllers
         {
 
             await HttpContext.SignOutAsync();
-            HttpContext.Session.SetString(SD.SessionToken, "");
-
+            HttpContext.Session.SetString(SD.AccessToken, "");
+            _tokenProvider.ClearToken();
             return RedirectToAction("Index", "Home");
         }
 

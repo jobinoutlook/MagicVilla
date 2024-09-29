@@ -13,21 +13,24 @@ namespace MagicVilla_Web
             //builder.Services.AddResponseCaching();
 
             // Add services to the container.
+            builder.Services.AddHttpClient<IVillaService, VillaService>();
+            builder.Services.AddHttpClient<IVillaNumberService, VillaNumberService>();
+            builder.Services.AddHttpClient<IAuthService, AuthService>();
+
+            builder.Services.AddScoped<IBaseService, BaseService>();
+
             builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(typeof(MappingConfig));
-
-            builder.Services.AddHttpClient<IVillaService, VillaService>();
+            
             builder.Services.AddScoped<IVillaService,VillaService>();
-
-            builder.Services.AddHttpClient<IVillaNumberService, VillaNumberService>();
+            
             builder.Services.AddScoped<IVillaNumberService, VillaNumberService>();
 
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            builder.Services.AddHttpClient<IAuthService, AuthService>();
+            
             builder.Services.AddScoped<IAuthService, AuthService>();
 
-           
+            builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 
             builder.Services.AddDistributedMemoryCache();
 

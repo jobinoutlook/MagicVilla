@@ -28,7 +28,7 @@ namespace MagicVilla_Web.Controllers
         //{
         //    List<VillaDTO> lstVilladto = new();
 
-        //    var response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+        //    var response = await _villaService.GetAllAsync<APIResponse>();
         //    if(response != null && response.IsSuccess)
         //    {
         //        lstVilladto = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
@@ -43,7 +43,7 @@ namespace MagicVilla_Web.Controllers
             int pageSize = 5;
 
            
-            APIResponse response = await _villaService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
+            APIResponse response = await _villaService.GetAllAsync<APIResponse>();
             if (response != null && response.IsSuccess)
             {
                 List<VillaDTO> lst = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
@@ -77,13 +77,22 @@ namespace MagicVilla_Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _villaService.CreateAsync<APIResponse>(model, HttpContext.Session.GetString(SD.SessionToken));
+                var response = await _villaService.CreateAsync<APIResponse>(model);
                 if(response != null && response.IsSuccess)
                 {
                    return RedirectToAction(nameof(IndexVillaPaged));
                 }
-            
+
+                if(response != null)
+                {
+                    if (response.ErrorMessages.Count > 0)
+                    {
+                        ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
+                    }
+                }
+                
             }
+            
             return View(model);
         }
 
@@ -94,7 +103,7 @@ namespace MagicVilla_Web.Controllers
         public async Task<IActionResult> UpdateVilla(int villaId)
         {
             VillaUpdateDTO villaDTO = new();
-            var response = await _villaService.GetAsync<APIResponse>(villaId, HttpContext.Session.GetString(SD.SessionToken));
+            var response = await _villaService.GetAsync<APIResponse>(villaId);
             if (response != null && response.IsSuccess)
             {
                 villaDTO = JsonConvert.DeserializeObject<VillaUpdateDTO>(Convert.ToString(response.Result));
@@ -112,10 +121,14 @@ namespace MagicVilla_Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = await _villaService.UpdateAsync<APIResponse>(model, HttpContext.Session.GetString(SD.SessionToken));
+                var response = await _villaService.UpdateAsync<APIResponse>(model);
                 if (response != null && response.IsSuccess)
                 {
                    return RedirectToAction(nameof(IndexVillaPaged));
+                }
+                else
+                {
+                    ModelState.AddModelError("CustomError", response.ErrorMessages.FirstOrDefault());
                 }
 
             }
@@ -127,7 +140,7 @@ namespace MagicVilla_Web.Controllers
         public async Task<IActionResult> DeleteVilla(int villaId)
         {
             VillaDTO? villaDTO = new();
-            var response = await _villaService.GetAsync<APIResponse>(villaId, HttpContext.Session.GetString(SD.SessionToken));
+            var response = await _villaService.GetAsync<APIResponse>(villaId);
             if (response != null && response.IsSuccess)
             {
                 villaDTO = JsonConvert.DeserializeObject<VillaDTO>(Convert.ToString(response.Result));
@@ -144,7 +157,7 @@ namespace MagicVilla_Web.Controllers
         public async Task<IActionResult> DeleteVilla(VillaDTO model)
         {
             
-                var response = await _villaService.DeleteAsync<APIResponse>(model.Id, HttpContext.Session.GetString(SD.SessionToken));
+                var response = await _villaService.DeleteAsync<APIResponse>(model.Id);
                 if (response != null && response.IsSuccess)
                 {
                    return RedirectToAction(nameof(IndexVillaPaged));
