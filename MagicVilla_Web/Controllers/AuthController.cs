@@ -105,7 +105,9 @@ namespace MagicVilla_Web.Controllers
         {
 
             await HttpContext.SignOutAsync();
-            HttpContext.Session.SetString(SD.AccessToken, "");
+            var token = _tokenProvider.GetToken();
+            _tokenProvider.ClearToken();
+            await _authService.LogoutAsync<APIResponse>(token);
             _tokenProvider.ClearToken();
             return RedirectToAction("Index", "Home");
         }

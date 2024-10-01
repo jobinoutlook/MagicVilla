@@ -1,3 +1,4 @@
+using MagicVilla_Web.Extensions;
 using MagicVilla_Web.Services;
 using MagicVilla_Web.Services.IServices;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -13,13 +14,14 @@ namespace MagicVilla_Web
             //builder.Services.AddResponseCaching();
 
             // Add services to the container.
+            builder.Services.AddControllersWithViews(u => u.Filters.Add(new AuthExceptionRedirection()));
             builder.Services.AddHttpClient<IVillaService, VillaService>();
             builder.Services.AddHttpClient<IVillaNumberService, VillaNumberService>();
             builder.Services.AddHttpClient<IAuthService, AuthService>();
+            builder.Services.AddSingleton<IApiMessageRequestBuilder, ApiMessageRequestBuilder>();
 
             builder.Services.AddScoped<IBaseService, BaseService>();
 
-            builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(typeof(MappingConfig));
             
             builder.Services.AddScoped<IVillaService,VillaService>();

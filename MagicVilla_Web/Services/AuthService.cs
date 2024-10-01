@@ -40,5 +40,15 @@ namespace MagicVilla_Web.Services
                 Url = _villaUrl + "/api/UsersAuth/register"
             }, withBearer:false);
         }
+
+        public async Task<T> LogoutAsync<T>(TokenDTO obj)
+        {
+            return await _baseService.SendAsync<T>(new APIRequest()
+            {
+                ApiType = MagicVilla_Utility.SD.ApiType.POST,
+                Data = obj,
+                Url = _villaUrl + "/api/UsersAuth/revoke"
+            });
+        }
     }
 }

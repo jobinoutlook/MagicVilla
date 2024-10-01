@@ -1,14 +1,19 @@
 
 using MagicVilla_VillaAPI.Data;
+using MagicVilla_VillaAPI.Extentions;
+using MagicVilla_VillaAPI.Filters;
+using MagicVilla_VillaAPI.Middlewares;
 using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Repository;
 using MagicVilla_VillaAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using Serilog;
 using System.Text;
 
@@ -56,8 +61,11 @@ namespace MagicVilla_VillaAPI
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = builder.Configuration.GetValue<string>("Issuer:Name"),
+                    ValidAudience = builder.Configuration.GetValue<string>("Audience:Name"),
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 
@@ -76,10 +84,13 @@ namespace MagicVilla_VillaAPI
 
             builder.Services.AddControllers(option =>
             {
-                option.ReturnHttpNotAcceptable = true;
+                option.Filters.Add<CustomExceptionFilter>();
+                //option.ReturnHttpNotAcceptable = true;
             }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+
+
             builder.Services.AddSwaggerGen(options =>
             {
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -123,6 +134,10 @@ namespace MagicVilla_VillaAPI
                 app.UseSwagger();
                 app.UseSwaggerUI();
             //}
+
+            //app.UseExceptionHandler("/ErrorHandling/ProcessError");
+            //app.HandleError(app.Environment.IsDevelopment());
+            app.UseMiddleware<CustomExceptionMiddleware>();
 
             app.UseStaticFiles();
 

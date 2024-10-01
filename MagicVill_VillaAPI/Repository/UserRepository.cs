@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Configuration.Annotations;
 using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Models;
 using MagicVilla_VillaAPI.Models.Dto;
@@ -6,6 +7,7 @@ using MagicVilla_VillaAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,6 +23,7 @@ namespace MagicVilla_VillaAPI.Repository
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
 
         public UserRepository(ApplicationDbContext db, IConfiguration configuration, UserManager<ApplicationUser> userManager
             , IMapper mapper, RoleManager<IdentityRole> roleManager)
@@ -30,6 +33,7 @@ namespace MagicVilla_VillaAPI.Repository
             _userManager = userManager;
             _mapper = mapper;
             _roleManager = roleManager;
+            _config = configuration;
         }
 
         public bool IsUniqueUser(string username)
@@ -119,7 +123,9 @@ namespace MagicVilla_VillaAPI.Repository
                     new Claim(ClaimTypes.Name,user.UserName.ToString()),
                     new Claim(ClaimTypes.Role,role),
                     new Claim(JwtRegisteredClaimNames.Jti,jwtTokenId),
-                    new Claim(JwtRegisteredClaimNames.Sub,user.Id)
+                    new Claim(JwtRegisteredClaimNames.Sub,user.Id),
+                    new Claim(JwtRegisteredClaimNames.Aud,_config.GetValue<string>("Audience:Name")),
+                    new Claim(JwtRegisteredClaimNames.Iss,_config.GetValue<string>("Issuer:Name"))
                     ]);
             }
 
@@ -132,6 +138,8 @@ namespace MagicVilla_VillaAPI.Repository
                 //    new Claim(ClaimTypes.Role, roles.FirstOrDefault())
                 //}),
                 Expires = DateTime.UtcNow.AddDays(7),
+                //Issuer = _config.GetValue<string>("Issuer:Name"),
+                //Audience = _config.GetValue<string>("Audience:Name"),
                 SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
 
             };
@@ -150,28 +158,18 @@ namespace MagicVilla_VillaAPI.Repository
                 return new TokenDTO();
             }
             //compare data from existing refresh and access token provided
-            var accessTokenData = GetAccessTokenData(tokenDTO.AccessToken);
-            if (!accessTokenData.isSuccessful ||
-                accessTokenData.userId != existingRefreshToken.UserId ||
-                accessTokenData.tokenId != existingRefreshToken.JwtTokenId)
+            var isTokenValid = GetAccessTokenData(tokenDTO.AccessToken, existingRefreshToken.UserId, existingRefreshToken.JwtTokenId);
+            
+            if (!isTokenValid)
             {
-                existingRefreshToken.IsValid = false;
-                _db.SaveChanges();
+                await MarkTokenAsInvalid(existingRefreshToken);
                 return new TokenDTO();
             }
 
             //when someone tries to use not valid refresh token, fraud possible
             if (!existingRefreshToken.IsValid) 
             {
-                var chainRecords = _db.RefreshTokens.Where(u => u.UserId == existingRefreshToken.UserId
-                && u.JwtTokenId == existingRefreshToken.JwtTokenId);
-
-                foreach (var item in chainRecords)
-                {
-                    item.IsValid = false;
-                }
-                _db.UpdateRange(chainRecords);
-                _db.SaveChanges();
+                await MarkAllTokenInChainAsInvalid(existingRefreshToken.UserId, existingRefreshToken.JwtTokenId);
                 return new TokenDTO();
             }
             
@@ -188,8 +186,8 @@ namespace MagicVilla_VillaAPI.Repository
                 existingRefreshToken.JwtTokenId);
 
             //revoke existing refresh Token 
-            existingRefreshToken.IsValid = false;
-            _db.SaveChanges();
+            await MarkTokenAsInvalid(existingRefreshToken);
+            
 
             //generate new access token
             var applicationUser = _db.ApplicationUsers.FirstOrDefault(u => u.Id == existingRefreshToken.UserId);
@@ -210,6 +208,25 @@ namespace MagicVilla_VillaAPI.Repository
 
         }
 
+        public async Task RevokeRefreshToken(TokenDTO tokenDTO)
+        {
+            var existingRefreshToken = await _db.RefreshTokens.FirstOrDefaultAsync(_ => _.Refresh_Token == tokenDTO.RefreshToken);
+
+            if (existingRefreshToken == null) 
+                return;
+
+            var isTokenValid = GetAccessTokenData(tokenDTO.AccessToken, existingRefreshToken.UserId, existingRefreshToken.JwtTokenId);
+
+            if (!isTokenValid)
+            {
+
+                return;
+            }
+
+            await MarkAllTokenInChainAsInvalid(existingRefreshToken.UserId, existingRefreshToken.JwtTokenId);
+        
+        
+        }
 
 
         private async Task<string> CreateNewRefreshToken(string userId,string tokenId)
@@ -227,20 +244,47 @@ namespace MagicVilla_VillaAPI.Repository
             await _db.SaveChangesAsync();
             return refreshToken.Refresh_Token;
         }
-        private (bool isSuccessful, string? userId, string? tokenId) GetAccessTokenData(string accessToken)
+        private bool GetAccessTokenData(string accessToken, string expectedUserId, string expectedTokenId)
         {
             try
             {
-                var tokenhandler = new JwtSecurityTokenHandler();
-                var jwt = tokenhandler.CreateJwtSecurityToken(accessToken);
+                //var tokenhandler = new JwtSecurityTokenHandler();
+                //var jwt = tokenhandler.CreateJwtSecurityToken(accessToken);
+                //var jwtTokenId = jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Jti).Value;
+                //var userId = jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Sub).Value;
+                //return userId == expectedUserId && jwtTokenId == expectedTokenId;
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var jwt = tokenHandler.ReadJwtToken(accessToken);
                 var jwtTokenId = jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Jti).Value;
                 var userId = jwt.Claims.FirstOrDefault(u => u.Type == JwtRegisteredClaimNames.Sub).Value;
-                return (true, userId, jwtTokenId);
+                return userId == expectedUserId && jwtTokenId == expectedTokenId;
+
             }
             catch
             {
-                return (false, null, null);
+                return false;
             }
         }
+        private async Task MarkAllTokenInChainAsInvalid(string userId, string tokenId)
+        {
+            var chainRecords = _db.RefreshTokens.Where(u => u.UserId == userId
+                && u.JwtTokenId == tokenId);
+
+            foreach (var item in chainRecords)
+            {
+                item.IsValid = false;
+            }
+            _db.UpdateRange(chainRecords);
+            _db.SaveChanges();
+        }
+
+        private Task MarkTokenAsInvalid(RefreshToken refreshToken)
+        {
+            refreshToken.IsValid = false;
+            return _db.SaveChangesAsync();
+        }
+
+       
     }
 }
