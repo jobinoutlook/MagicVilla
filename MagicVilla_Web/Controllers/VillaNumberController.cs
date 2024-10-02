@@ -18,12 +18,14 @@ namespace MagicVilla_Web.Controllers
         private readonly IVillaNumberService _villaNumberService;
         private readonly IVillaService _villaService;
         private readonly IMapper _mapper;
+        private int _pageSize = 5;
 
-        public VillaNumberController(IVillaNumberService villaNumberService, IVillaService villaService, IMapper mapper)
+        public VillaNumberController(IVillaNumberService villaNumberService, IVillaService villaService, IMapper mapper,IConfiguration configuration)
         {
             _villaNumberService = villaNumberService;
             _villaService = villaService;
             _mapper = mapper;
+            _pageSize = _pageSize = configuration.GetValue<int>("PageSize:Value");
         }
 
         //public async Task<IActionResult> IndexVillaNumber()
@@ -41,8 +43,7 @@ namespace MagicVilla_Web.Controllers
 
         public async Task<IActionResult> IndexVillaNumberPaged(int? pageNumber)
         {
-            int pageSize = SD.PageSize;
-
+           
 
             APIResponse response = await _villaNumberService.GetAllAsync<APIResponse>();
             if (response != null && response.IsSuccess)
@@ -50,7 +51,7 @@ namespace MagicVilla_Web.Controllers
                 List<VillaNumberDTO> lst = JsonConvert.DeserializeObject<List<VillaNumberDTO>>(Convert.ToString(response.Result));
                 var queryable = lst.AsQueryable();
 
-                var paginatedResult = await PaginatedList<VillaNumberDTO>.CreateAsync(queryable, pageNumber ?? 1, pageSize);
+                var paginatedResult = await PaginatedList<VillaNumberDTO>.CreateAsync(queryable, pageNumber ?? 1, _pageSize);
 
                 return View(paginatedResult);
 

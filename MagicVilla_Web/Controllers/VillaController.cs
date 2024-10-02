@@ -6,6 +6,7 @@ using MagicVilla_Web.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +17,15 @@ namespace MagicVilla_Web.Controllers
     {
         private readonly IVillaService _villaService;
        
-
-        public VillaController(IVillaService villaService)
+       
+        private int _pageSize = 5;
+        public VillaController(IVillaService villaService,IConfiguration configuration)
         {
             _villaService = villaService;
-            
+
+            _pageSize = configuration.GetValue<int>("PageSize:Value");
+
+
         }
 
         //[ResponseCache(Duration = 30)]
@@ -40,16 +45,16 @@ namespace MagicVilla_Web.Controllers
 
         public async Task<IActionResult> IndexVillaPaged(int? pageNumber)
         {
-            int pageSize = SD.PageSize;
+            
 
-           
+
             APIResponse response = await _villaService.GetAllAsync<APIResponse>();
             if (response != null && response.IsSuccess)
             {
                 List<VillaDTO> lst = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
                 var queryable = lst.AsQueryable();
 
-              var paginatedResult = await PaginatedList<VillaDTO>.CreateAsync(queryable, pageNumber ?? 1, pageSize);
+              var paginatedResult = await PaginatedList<VillaDTO>.CreateAsync(queryable, pageNumber ?? 1, _pageSize);
 
               return View(paginatedResult);
 
