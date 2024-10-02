@@ -27,6 +27,7 @@ namespace MagicVilla_VillaAPI.Middlewares
         {
             context.Response.StatusCode = 500;
             context.Response.ContentType = "application/json";
+            
 
             if (ex is BadImageFormatException badImageException)
             {
@@ -39,10 +40,12 @@ namespace MagicVilla_VillaAPI.Middlewares
             }
             else
             {
+                string message=string.Empty;
+                if (ex.InnerException != null) { message = ex.InnerException.Message; }
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(new
                 {
                     StatusCode = context.Response.StatusCode,
-                    ErrorMessage = "Hello From Middleware! - Finale"
+                    ErrorMessage = "Hello From Middleware! - Finale - ex: " + ex.Message + " inner-ex: " + message
                 }));
             }
         }
