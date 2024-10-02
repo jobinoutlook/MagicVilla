@@ -41,7 +41,7 @@ namespace MagicVilla_Web.Controllers
 
         public async Task<IActionResult> IndexVillaNumberPaged(int? pageNumber)
         {
-            int pageSize = 5;
+            int pageSize = SD.PageSize;
 
 
             APIResponse response = await _villaNumberService.GetAllAsync<APIResponse>();
