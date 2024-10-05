@@ -11,6 +11,7 @@ namespace MagicVilla_VillaAPI.Models
         public string Refresh_Token { get; set; }
         public bool IsValid { get; set; }
         public DateTime ExpiresAt { get; set; }
+        public DateTime? LastLogin { get; set; } = DateTime.UtcNow;    
 
     }
 

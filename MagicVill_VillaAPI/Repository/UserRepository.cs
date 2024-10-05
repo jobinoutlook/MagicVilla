@@ -52,7 +52,7 @@ namespace MagicVilla_VillaAPI.Repository
             var user = _db.ApplicationUsers.FirstOrDefault(u => u.UserName.ToLower() == loginRequestDTO.UserName.ToLower());
 
             //added by Jobin
-            RemoveInvalidRefreshTokens(user);
+          // RemoveInvalidRefreshTokens(user);
 
 
             bool IsValid = await _userManager.CheckPasswordAsync(user, loginRequestDTO.Password);
@@ -81,8 +81,29 @@ namespace MagicVilla_VillaAPI.Repository
 
         private async void RemoveInvalidRefreshTokens(ApplicationUser user)
         {
-            var invalidRefreshTokens = await _db.RefreshTokens.Where(u => u.IsValid == false && u.UserId == user.Id).ToListAsync();
-            _db.RefreshTokens.RemoveRange(invalidRefreshTokens);
+            List<RefreshToken> invalidRefreshTokens = await _db.RefreshTokens.Where(u=>u.UserId == user.Id).ToListAsync();
+
+            var invalidTokens = invalidRefreshTokens.Where(u => u.IsValid == false).ToArray();
+            _db.RefreshTokens.RemoveRange(invalidTokens);
+
+
+            //invalidRefreshTokens = await _db.RefreshTokens.Where(u => u.UserId == user.Id).ToListAsync();
+
+            //if (invalidRefreshTokens.Count>1)
+            //{
+
+            //    for (int i = 0; i < invalidRefreshTokens.Count-1; i++)
+            //    {
+                    
+            //        _db.RefreshTokens.Remove(invalidRefreshTokens[i]);
+                    
+            //    }
+
+                
+            //}
+
+
+           
         }
 
 
