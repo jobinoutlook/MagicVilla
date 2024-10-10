@@ -19,7 +19,7 @@ namespace MagicVilla_VillaAPI.Repository
             await SaveAsync();
         }
 
-        public async Task<VillaNumber> GetAsync(Expression<Func<VillaNumber, bool>> filter = null, bool tracked = true)
+        public async Task<VillaNumber> GetAsync(Expression<Func<VillaNumber, bool>> filter = null, bool tracked = true, string? includeProperties = null)
         {
             IQueryable<VillaNumber> query = _db.VillaNumbers;
 
@@ -33,10 +33,19 @@ namespace MagicVilla_VillaAPI.Repository
                 query = query.Where(filter);
             }
 
+            if (includeProperties != null)
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<List<VillaNumber>> GetAllAsync(Expression<Func<VillaNumber, bool>> filter = null)
+        public async Task<List<VillaNumber>> GetAllAsync(Expression<Func<VillaNumber, bool>> filter = null, string? includeProperties = null,
+             int pageSize = 10, int pageNumber = 1)
         {
             
 
@@ -48,6 +57,26 @@ namespace MagicVilla_VillaAPI.Repository
             {
                 query = query.Where(filter);
             }
+
+            if (includeProperties != null)
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+            if (pageSize > 0)
+            {
+                if (pageSize > 100)
+                {
+                    pageSize = 100;
+                }
+                //skip0.take(5)
+                //page number- 2     || page size -5
+                //skip(5*(1)) take(5)
+                query = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+            }
+
             return  query.ToList();
         }
 
@@ -69,5 +98,7 @@ namespace MagicVilla_VillaAPI.Repository
             _db.Update(entity);
             await SaveAsync();
         }
+
+        
     }
 }

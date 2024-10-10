@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Text.Json;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
@@ -34,17 +35,20 @@ namespace MagicVilla_VillaAPI.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetVillas()
+        public async Task<ActionResult<APIResponse>> GetVillas([FromForm] Pagination pagination)
         {
             try
             {
 
                 //var products = _db.Villas.AsNoTracking();
 
-                IEnumerable<Villa> villaList = await _dbVilla.GetAllAsync();
+                IEnumerable<Villa> villaList = await _dbVilla.GetAllAsync(pageSize: pagination.PageSize,
+                        pageNumber: pagination.PageNumber);
                 _logger.Log("Getting all villas", LogType.INFO);
 
                 // return Ok(await _db.Villas.ToListAsync());
+                // Pagination pagination = new() { PageNumber = pagenumber, PageSize = pagesize };
+                //Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
                 _response.Result = _mapper.Map<List<VillaDTO>>(villaList);
                 _response.StatusCode = HttpStatusCode.OK;
                 

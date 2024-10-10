@@ -2,6 +2,7 @@
 using MagicVilla_Web.Services.IServices;
 using static MagicVilla_Utility.SD;
 using System;
+using MagicVilla_Web.Models;
 
 namespace MagicVilla_Web.Services
 {
@@ -47,9 +48,24 @@ namespace MagicVilla_Web.Services
                 ApiType = MagicVilla_Utility.SD.ApiType.GET,
 
                 Url = _villaUrl + "/api/VillaAPI/",
-                
+
+               
             });
         }
+        public async Task<T> GetAllAsync<T>(int pageSize = 10, int? pageNumber = 1)
+        {
+            return await _baseService.SendAsync<T>(new Models.APIRequest()
+            {
+                ApiType = MagicVilla_Utility.SD.ApiType.GET,
+
+                Url = _villaUrl + "/api/VillaAPI/",
+
+                Data = new Pagination { PageSize = pageSize, PageNumber = pageNumber }
+
+            });
+        }
+
+        
 
         public async Task<T> GetAsync<T>(int id)
         {

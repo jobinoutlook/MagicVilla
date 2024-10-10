@@ -34,12 +34,13 @@ namespace MagicVilla_VillaAPI.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetVillaNumbers()
+        public async Task<ActionResult<APIResponse>> GetVillaNumbers([FromForm] Pagination pagination)
         {
             try
             {
 
-                IEnumerable<VillaNumber> villaNumberList = await _dbVillaNum.GetAllAsync();
+                IEnumerable<VillaNumber> villaNumberList = await _dbVillaNum.GetAllAsync(pageSize: pagination.PageSize,
+                        pageNumber: pagination.PageNumber,includeProperties: "Villa");
                 _logger.Log("Getting all villas", LogType.INFO);
 
                 // return Ok(await _db.Villas.ToListAsync());

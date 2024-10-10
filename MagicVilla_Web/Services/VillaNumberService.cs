@@ -1,4 +1,5 @@
-﻿using MagicVilla_Web.Models.Dto;
+﻿using MagicVilla_Web.Models;
+using MagicVilla_Web.Models.Dto;
 using MagicVilla_Web.Services.IServices;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
@@ -53,6 +54,19 @@ namespace MagicVilla_Web.Services
 
                 Url = _villaUrl + "/api/VillaNumberAPI/"
                 
+            });
+        }
+
+        public async Task<T> GetAllAsync<T>(int pageSize = 10, int? pageNumber = 1)
+        {
+            return await _baseService.SendAsync<T>(new Models.APIRequest()
+            {
+                ApiType = MagicVilla_Utility.SD.ApiType.GET,
+
+                Url = _villaUrl + "/api/VillaNumberAPI/",
+
+                Data = new Pagination { PageSize = pageSize, PageNumber = pageNumber }
+
             });
         }
 

@@ -18,7 +18,7 @@ namespace MagicVilla_Web.Controllers
         private readonly IVillaService _villaService;
        
        
-        private int _pageSize = 5;
+        private int _pageSize = 10;
         public VillaController(IVillaService villaService,IConfiguration configuration)
         {
             _villaService = villaService;
@@ -34,35 +34,34 @@ namespace MagicVilla_Web.Controllers
         //    List<VillaDTO> lstVilladto = new();
 
         //    var response = await _villaService.GetAllAsync<APIResponse>();
-        //    if(response != null && response.IsSuccess)
+        //    if (response != null && response.IsSuccess)
         //    {
         //        lstVilladto = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
-                
+
         //    }
 
         //    return View(lstVilladto);
         //}
-
+        [ResponseCache(Duration = 30)]
         public async Task<IActionResult> IndexVillaPaged(int? pageNumber)
         {
-            
 
 
-            APIResponse response = await _villaService.GetAllAsync<APIResponse>();
+            APIResponse response = await _villaService.GetAllAsync<APIResponse>(_pageSize, pageNumber);
             if (response != null && response.IsSuccess)
             {
                 List<VillaDTO> lst = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
                 var queryable = lst.AsQueryable();
 
-              var paginatedResult = await PaginatedList<VillaDTO>.CreateAsync(queryable, pageNumber ?? 1, _pageSize);
+                var paginatedResult = await PaginatedList<VillaDTO>.CreateAsync(queryable, pageNumber ?? 1, _pageSize);
 
-              return View(paginatedResult);
+                return View(paginatedResult);
 
             }
-            
+
 
             return NotFound();
-            
+
         }
 
 
