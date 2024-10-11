@@ -23,6 +23,6 @@ namespace MagicVilla_Utility
             MultipartFormData
         }
 
-        public static int PageSize { get; private set; } = 8;
+        public static int PageSize { get; private set; } = 10;
     }
 }
