@@ -44,7 +44,11 @@ namespace MagicVilla_VillaAPI.Repository
             return await query.FirstOrDefaultAsync();
         }
 
-        
+        public async Task<List<Villa>> GetAllAsync()
+        {
+            IQueryable<Villa> query = _db.Villas;
+            return await query.ToListAsync();
+        }
 
         public async Task<List<Villa>> GetAllAsync(Expression<Func<Villa,bool>> filter = null, string? includeProperties = null,
             int pageSize=10, int pageNumber = 1)

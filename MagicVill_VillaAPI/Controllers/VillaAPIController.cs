@@ -35,15 +35,15 @@ namespace MagicVilla_VillaAPI.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetVillas([FromForm] PaginationDTO pagination)
+        public async Task<ActionResult<APIResponse>> GetVillas()//[FromQuery] PaginationDTO pagination)
         {
             try
             {
 
                 //var products = _db.Villas.AsNoTracking();
 
-                IEnumerable<Villa> villaList = await _dbVilla.GetAllAsync(pageSize: pagination.PageSize,
-                        pageNumber: pagination.PageNumber);
+                IEnumerable<Villa> villaList = await _dbVilla.GetAllAsync();//pageSize: pagination.PageSize,
+                       // pageNumber: pagination.PageNumber);
                 _logger.Log("Getting all villas", LogType.INFO);
 
                 // return Ok(await _db.Villas.ToListAsync());
