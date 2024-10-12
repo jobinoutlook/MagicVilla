@@ -65,7 +65,7 @@ namespace MagicVilla_Web.Services
 
                 Url = _villaUrl + "/api/VillaNumberAPI/",
 
-                Data = new Pagination { PageSize = pageSize, PageNumber = pageNumber }
+                Data = new PaginationDTO { PageSize = pageSize, PageNumber = pageNumber }
 
             });
         }

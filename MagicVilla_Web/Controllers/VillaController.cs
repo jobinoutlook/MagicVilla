@@ -29,31 +29,32 @@ namespace MagicVilla_Web.Controllers
         }
 
         //[ResponseCache(Duration = 30)]
-        //public async Task<IActionResult> IndexVilla()
-        //{
-        //    List<VillaDTO> lstVilladto = new();
+        public async Task<IActionResult> IndexVilla()
+        {
+            List<VillaDTO> lstVilladto = new();
 
-        //    var response = await _villaService.GetAllAsync<APIResponse>();
-        //    if (response != null && response.IsSuccess)
-        //    {
-        //        lstVilladto = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
+            var response = await _villaService.GetAllAsync<APIResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                lstVilladto = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
 
-        //    }
+            }
 
-        //    return View(lstVilladto);
-        //}
-        [ResponseCache(Duration = 30)]
-        public async Task<IActionResult> IndexVillaPaged(int? pageNumber)
+            return View(lstVilladto);
+        }
+
+        //[ResponseCache(Duration = 30)]
+        public async Task<IActionResult> IndexVillaPaged(PaginationDTO dto)
         {
 
 
-            APIResponse response = await _villaService.GetAllAsync<APIResponse>(_pageSize, pageNumber);
+            APIResponse response = await _villaService.GetAllAsync<APIResponse>(dto);
             if (response != null && response.IsSuccess)
             {
                 List<VillaDTO> lst = JsonConvert.DeserializeObject<List<VillaDTO>>(Convert.ToString(response.Result));
                 var queryable = lst.AsQueryable();
 
-                var paginatedResult = await PaginatedList<VillaDTO>.CreateAsync(queryable, pageNumber ?? 1, _pageSize);
+                var paginatedResult = await PaginatedList<VillaDTO>.CreateAsync(queryable, dto.PageNumber ?? 1, _pageSize);
 
                 return View(paginatedResult);
 

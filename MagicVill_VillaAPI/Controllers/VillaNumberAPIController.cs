@@ -12,7 +12,7 @@ using System.Net;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
-   
+
     [Route("api/VillaNumberAPI")]
     [ApiController]
     public class VillaNumberAPIController : ControllerBase
@@ -34,7 +34,7 @@ namespace MagicVilla_VillaAPI.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<APIResponse>> GetVillaNumbers([FromForm] Pagination pagination)
+        public async Task<ActionResult<APIResponse>> GetVillaNumbers([FromForm] PaginationDTO pagination)
         {
             try
             {
