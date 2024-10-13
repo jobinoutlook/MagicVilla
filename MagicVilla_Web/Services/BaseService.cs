@@ -39,15 +39,15 @@ namespace MagicVilla_Web.Services
             {
                 var client = httpClient.CreateClient("MagicAPI");
 
-                var messageFactory = () =>
-                {
-                    return _apiMessageRequestBuilder.Build(apiRequest);
-                };
+                //var messageFactory = () =>
+                //{
+                //    return _apiMessageRequestBuilder.Build(apiRequest);
+                //};
+                HttpRequestMessage messageFactory() => _apiMessageRequestBuilder.Build(apiRequest);
 
-                
+
+
                 HttpResponseMessage httpResponseMessage = null;
-
-
 
 
 
