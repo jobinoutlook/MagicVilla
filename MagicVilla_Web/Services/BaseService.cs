@@ -43,7 +43,10 @@ namespace MagicVilla_Web.Services
                 //{
                 //    return _apiMessageRequestBuilder.Build(apiRequest);
                 //};
-                HttpRequestMessage messageFactory() => _apiMessageRequestBuilder.Build(apiRequest);
+
+               // HttpRequestMessage messageFactory() => _apiMessageRequestBuilder.Build(apiRequest);
+
+                Func<HttpRequestMessage> messageFactory = () => _apiMessageRequestBuilder.Build(apiRequest);
 
 
 
