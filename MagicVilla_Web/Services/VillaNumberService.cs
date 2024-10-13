@@ -57,15 +57,21 @@ namespace MagicVilla_Web.Services
             });
         }
 
-        public async Task<T> GetAllAsync<T>(int pageSize = 10, int? pageNumber = 1)
+        public async Task<T> GetAllAsync<T>(int pageSize, int? pageNumber)
+        {
+            PaginationDTO dto = new PaginationDTO() { PageSize = pageSize, PageNumber = pageNumber };
+
+            return await GetAllAsync<T>(dto);
+        }
+        public async Task<T> GetAllAsync<T>(PaginationDTO dto)
         {
             return await _baseService.SendAsync<T>(new Models.APIRequest()
             {
                 ApiType = MagicVilla_Utility.SD.ApiType.GET,
 
-                Url = _villaUrl + "/api/VillaNumberAPI/",
+                Url = _villaUrl + "/api/VillaNumberAPI/?pageNumber="+ dto.PageNumber + "&pageSize="+dto.PageSize,
 
-                Data = new PaginationDTO { PageSize = pageSize, PageNumber = pageNumber }
+               // Data = new PaginationDTO { PageSize = pageSize, PageNumber = pageNumber }
 
             });
         }

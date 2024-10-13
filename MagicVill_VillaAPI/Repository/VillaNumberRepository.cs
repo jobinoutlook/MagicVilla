@@ -44,6 +44,19 @@ namespace MagicVilla_VillaAPI.Repository
             return await query.FirstOrDefaultAsync();
         }
 
+        public async Task<List<VillaNumber>> GetAllAsync(string? includeProperties = null)
+        {
+            IQueryable<VillaNumber> query = _db.VillaNumbers;
+            if (includeProperties != null)
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+            return await query.ToListAsync();
+        }
+
         public async Task<List<VillaNumber>> GetAllAsync(Expression<Func<VillaNumber, bool>> filter = null, string? includeProperties = null,
              int pageSize = 10, int pageNumber = 1)
         {

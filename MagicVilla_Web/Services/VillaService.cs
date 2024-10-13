@@ -69,7 +69,7 @@ namespace MagicVilla_Web.Services
 
                 Url = _villaUrl + "/api/VillaAPI/?pageNumber="+dto.PageNumber+"&pageSize="+dto.PageSize,
 
-                Data = dto
+                //Data = dto
 
             });
         }
