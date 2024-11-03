@@ -62,7 +62,7 @@ namespace MagicVilla_VillaAPI
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
                     ValidateIssuer = true,
-                    ValidateAudience = true,
+                    ValidateAudience = false,
                     ValidIssuer = builder.Configuration.GetValue<string>("Issuer:Name"),
                     ValidAudience = builder.Configuration.GetValue<string>("Audience:Name"),
                     ClockSkew = TimeSpan.Zero
