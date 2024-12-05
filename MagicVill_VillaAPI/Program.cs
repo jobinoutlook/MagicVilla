@@ -40,11 +40,11 @@ namespace MagicVilla_VillaAPI
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddAutoMapper(typeof(MappingConfig));
 
-            //serilog
-            /*Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
-               .WriteTo.File(Path.Combine("log","villaLogs.txt"), rollingInterval: RollingInterval.Day).CreateLogger();
+            //serilog uncomment lines below to enable file logging
+            //Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
+            //   .WriteTo.File(Path.Combine("Logging", "villaLogs.txt"), rollingInterval: RollingInterval.Day).CreateLogger();
 
-            builder.Host.UseSerilog();*/
+            //builder.Host.UseSerilog();
 
             var key = builder.Configuration.GetValue<string>("ApiSettings:Secret");
 
